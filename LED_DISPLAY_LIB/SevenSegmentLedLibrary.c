@@ -1,15 +1,46 @@
 #include "SevenSegmentLedLibrary.h"
 #include "stm32f4xx_hal.h"
 
+#include <stdint.h>
+#include <stdbool.h>
 #include <math.h>
+
+#define DISPLAYCOUNT 2
+#define SEGMENTCOUNT 8
+#define NUMBERSEGMENTS 8 // max segments used in number count
+
+#define SYMBOLCOUNT 10 // symbols available
+#define DOTINDEX 7
+
+typedef struct
+{
+  GPIO_TypeDef *port;
+  uint16_t pin;
+} segment_t;
+
+typedef struct
+{
+  segment_t segment[SEGMENTCOUNT];
+} display_t;
+
+typedef struct
+{
+  bool symbolMap[NUMBERSEGMENTS]; // boolean map of each number
+} symbol_t;
 
 display_t g_display[DISPLAYCOUNT];
 symbol_t g_symbol[SYMBOLCOUNT];
 
-#define DOTINDEX 7
+void configureSymbols (void);
+void configureDisplays (void);
 
-void
-configureNumberZero ()
+void SSLL_Init (void)
+{
+  configureSymbols ();
+  configureDisplays ();
+}
+
+void configureNumberZero ()
 {
   g_symbol[0].symbolMap[0] = true;
   g_symbol[0].symbolMap[1] = true;
@@ -17,12 +48,10 @@ configureNumberZero ()
   g_symbol[0].symbolMap[3] = true;
   g_symbol[0].symbolMap[4] = true;
   g_symbol[0].symbolMap[5] = true;
-
   g_symbol[0].symbolMap[6] = false;
 }
 
-void
-configureNumberOne ()
+void configureNumberOne ()
 {
   g_symbol[1].symbolMap[0] = false;
   g_symbol[1].symbolMap[1] = true;
@@ -33,8 +62,7 @@ configureNumberOne ()
   g_symbol[1].symbolMap[6] = false;
 }
 
-void
-configureNumberTwo ()
+void configureNumberTwo ()
 {
   g_symbol[2].symbolMap[0] = true;
   g_symbol[2].symbolMap[1] = true;
@@ -45,8 +73,7 @@ configureNumberTwo ()
   g_symbol[2].symbolMap[6] = true;
 }
 
-void
-configureNumberThree ()
+void configureNumberThree ()
 {
   g_symbol[3].symbolMap[0] = true;
   g_symbol[3].symbolMap[1] = true;
@@ -57,8 +84,7 @@ configureNumberThree ()
   g_symbol[3].symbolMap[6] = true;
 }
 
-void
-configureNumberFour ()
+void configureNumberFour ()
 {
   g_symbol[4].symbolMap[0] = false;
   g_symbol[4].symbolMap[1] = true;
@@ -69,8 +95,7 @@ configureNumberFour ()
   g_symbol[4].symbolMap[6] = true;
 }
 
-void
-configureNumberFive ()
+void configureNumberFive ()
 {
   g_symbol[5].symbolMap[0] = true;
   g_symbol[5].symbolMap[1] = false;
@@ -81,8 +106,7 @@ configureNumberFive ()
   g_symbol[5].symbolMap[6] = true;
 }
 
-void
-configureNumberSix ()
+void configureNumberSix ()
 {
   g_symbol[6].symbolMap[0] = true;
   g_symbol[6].symbolMap[1] = false;
@@ -93,8 +117,7 @@ configureNumberSix ()
   g_symbol[6].symbolMap[6] = true;
 }
 
-void
-configureNumberSeven ()
+void configureNumberSeven ()
 {
   g_symbol[7].symbolMap[0] = true;
   g_symbol[7].symbolMap[1] = true;
@@ -105,8 +128,7 @@ configureNumberSeven ()
   g_symbol[7].symbolMap[6] = false;
 }
 
-void
-configureNumberEight ()
+void configureNumberEight ()
 {
   g_symbol[8].symbolMap[0] = true;
   g_symbol[8].symbolMap[1] = true;
@@ -117,8 +139,7 @@ configureNumberEight ()
   g_symbol[8].symbolMap[6] = true;
 }
 
-void
-configureNumberNine ()
+void configureNumberNine ()
 {
   g_symbol[9].symbolMap[0] = true;
   g_symbol[9].symbolMap[1] = true;
@@ -129,8 +150,7 @@ configureNumberNine ()
   g_symbol[9].symbolMap[6] = true;
 }
 
-void
-configureSymbols ()
+void configureSymbols ()
 {
   configureNumberZero ();
   configureNumberOne ();
@@ -145,24 +165,21 @@ configureSymbols ()
 
 }
 
-void
-dotOn (int displayIndex)
+void dotOn (int displayIndex)
 {
   HAL_GPIO_WritePin (g_display[displayIndex].segment[DOTINDEX].port,
-                     g_display[displayIndex].segment[DOTINDEX].pin,
-                     GPIO_PIN_RESET);
+		     g_display[displayIndex].segment[DOTINDEX].pin,
+		     GPIO_PIN_RESET);
 }
 
-void
-dotOff (int displayIndex)
+void dotOff (int displayIndex)
 {
   HAL_GPIO_WritePin (g_display[displayIndex].segment[DOTINDEX].port,
-                     g_display[displayIndex].segment[DOTINDEX].pin,
-                     GPIO_PIN_SET);
+		     g_display[displayIndex].segment[DOTINDEX].pin,
+		     GPIO_PIN_SET);
 }
 
-void
-clearAllDisplays ()
+void clearAllDisplays ()
 {
   for (int displayIndex = 0; displayIndex < DISPLAYCOUNT; displayIndex++)
     {
@@ -170,20 +187,18 @@ clearAllDisplays ()
     }
 }
 
-void
-clearDisplay (const int displayIndex)
+void clearDisplay (const int displayIndex)
 {
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-                         g_display[displayIndex].segment[i].pin, GPIO_PIN_SET);
+			 g_display[displayIndex].segment[i].pin, GPIO_PIN_SET);
     }
 
   dotOff (displayIndex);
 }
 
-void
-configureDisplays (void)
+void configureDisplays (void)
 {
   g_display[0].segment[0].port = GPIOB;
   g_display[0].segment[1].port = GPIOC;
@@ -223,55 +238,54 @@ configureDisplays (void)
 
 }
 
-void
-displayInteger (const int displayIndex, const int number)
+void displayInteger (const int displayIndex, const int number)
 {
   clearDisplay (displayIndex);
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[number].symbolMap[i])
-        {
-          HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-                             g_display[displayIndex].segment[i].pin,
-                             GPIO_PIN_RESET);
-        }
+	{
+	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
+			     g_display[displayIndex].segment[i].pin,
+			     GPIO_PIN_RESET);
+	}
     }
 
 }
 
-void
-displayFloat (const int displayIndex, const float fnumber)
+void displayFloat (const int displayIndex, const float fnumber)
 {
   int roundNumber = round (fnumber);
   clearDisplay (displayIndex);
 
-  dotOn (1);
+  dotOn (1); // display 1
 
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[roundNumber].symbolMap[i])
-        {
-          HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-                             g_display[displayIndex].segment[i].pin,
-                             GPIO_PIN_RESET);
-        }
+	{
+	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
+			     g_display[displayIndex].segment[i].pin,
+			     GPIO_PIN_RESET);
+	}
     }
 }
 
-void
-displayDigit (const float number)
+void displayDigit (const float number)
 {
+
   if (number <= 99 && 10 <= number)
     {
       clearAllDisplays ();
+
       int firstDigit = round (number);
       int lastDigit = round (number);
       lastDigit %= 10;
 
       while (firstDigit >= 10)
-        {
-          firstDigit = firstDigit / 10;
-        }
+	{
+	  firstDigit = firstDigit / 10;
+	}
 
       displayInteger (1, firstDigit);
       displayInteger (0, lastDigit);
@@ -284,13 +298,12 @@ displayDigit (const float number)
       int lastDigit = (int) (floor (number * 10)) % 10;
 
       while (firstDigit >= 10)
-        {
-          firstDigit = firstDigit / 10;
-        }
+	{
+	  firstDigit = firstDigit / 10;
+	}
 
       displayFloat (1, firstDigit);
       displayFloat (0, lastDigit);
-      firstDigit = firstDigit;
     }
 }
 
