@@ -40,6 +40,9 @@ void SSLL_Init (void)
   configureDisplays ();
 }
 
+/**
+ * Configure all symbols
+ */
 void configureNumberZero ()
 {
   g_symbol[0].symbolMap[0] = true;
@@ -238,9 +241,11 @@ void configureDisplays (void)
 
 }
 
-void displayInteger (const int displayIndex, const int number)
+void displaySymbol (const int displayIndex, const int number)
 {
   clearDisplay (displayIndex);
+
+  // iterate trough the symbol's map and set the diodes
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[number].symbolMap[i])
@@ -260,6 +265,7 @@ void displayFloat (const int displayIndex, const float fnumber)
 
   dotOn (1); // display 1
 
+  // iterate trough the symbol's map and set the diodes
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[roundNumber].symbolMap[i])
@@ -274,11 +280,15 @@ void displayFloat (const int displayIndex, const float fnumber)
 void displayDigit (const float number)
 {
 
+  // select display method
   if (number <= 99 && 10 <= number)
     {
       clearAllDisplays ();
 
+      // extract first digit
       int firstDigit = round (number);
+
+      // extract last digit
       int lastDigit = round (number);
       lastDigit %= 10;
 
@@ -287,14 +297,18 @@ void displayDigit (const float number)
 	  firstDigit = firstDigit / 10;
 	}
 
-      displayInteger (1, firstDigit);
-      displayInteger (0, lastDigit);
+      // display the digits
+      displaySymbol (1, firstDigit);
+      displaySymbol (0, lastDigit);
     }
   else if (number < 10 && 0 <= number)
     {
       clearAllDisplays ();
 
+      // extract first digit
       int firstDigit = (int) number; // cuts the number after precision point
+
+      // extract precision point
       int lastDigit = (int) (floor (number * 10)) % 10;
 
       while (firstDigit >= 10)
@@ -302,6 +316,7 @@ void displayDigit (const float number)
 	  firstDigit = firstDigit / 10;
 	}
 
+      // display the digits
       displayFloat (1, firstDigit);
       displayFloat (0, lastDigit);
     }
