@@ -1,3 +1,0 @@
-sinusoid.c:18:1:voltToValueConverter	24	static
-sinusoid.c:26:1:sinToAnalogValue	32	static
-sinusoid.c:32:1:sinusoid	40	static

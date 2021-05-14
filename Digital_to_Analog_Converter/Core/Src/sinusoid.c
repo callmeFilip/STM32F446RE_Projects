@@ -8,41 +8,39 @@
 #include <math.h>
 
 #include "sinusoid.h"
-#define OFFSET 2047.5
+#define OFFSET 2047
 #define ANALOG_MAX_VALUE 4095
-#define NUMBER_POINTS 100 // 100 points total for T period of time
+#define ANALOG_MIN_VALUE 0
 #define VCC 3300 // VCC = 3.3V => 3300mV
-#define PI 3.14159265358979323846
+#define SAMPLE_TIME 0.001
+#define PI 3.1415926
 
-int
-voltToValueConverter (int mV)
+int voltToDacValueConverter (double U)
 {
-  double step = (VCC * 1.0) / ANALOG_MAX_VALUE;
-
-  return round(mV / step) - 1;
+  return (U * 1000) / ((VCC * 1.0) / ANALOG_MAX_VALUE);
 }
 
-int
-sinToAnalogValue (double val, int diapasonValue) // sin() => 0 ; ANALOG_MAX_VALUE
+void sinusoid (double U, int F, DAC_HandleTypeDef *hdac)
 {
-  return round(sin (val) * diapasonValue);
-}
+  int diapasonValue = voltToDacValueConverter (U);
 
-void
-sinusoid (int mV, int T, DAC_HandleTypeDef *hdac)
-{
-  int t = round (T / NUMBER_POINTS); // t - the time for one sample
-
-  int diapasonValue = voltToValueConverter (mV);
-
-  if (diapasonValue >= ANALOG_MAX_VALUE)
+  if (ANALOG_MAX_VALUE <= diapasonValue)
     {
-      return;
+      diapasonValue = ANALOG_MAX_VALUE;
+    }
+  else if (diapasonValue <= ANALOG_MIN_VALUE)
+    {
+      diapasonValue = ANALOG_MIN_VALUE;
     }
 
-  for (double i = 0; i < 2 * PI; i += 0.01)
+  double T = 1.0 / F;
+  int N = T / SAMPLE_TIME;
+
+  for (int n = 0; n < N; n++)
     {
-      HAL_DAC_SetValue (hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, round(sinToAnalogValue (i, diapasonValue) + OFFSET));
-      HAL_Delay (t);
+      HAL_DAC_SetValue (hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R,
+			voltToDacValueConverter(U * ( 1 + sin (2 * PI * n * SAMPLE_TIME / T) )));
+
+      HAL_Delay (SAMPLE_TIME * 1000 - 1);
     }
 }

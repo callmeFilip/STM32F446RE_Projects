@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "sinusoid.h"
+#include <assert.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
