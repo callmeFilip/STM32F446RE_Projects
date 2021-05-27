@@ -49,10 +49,10 @@ UART_HandleTypeDef huart2;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config (void);
-static void MX_GPIO_Init (void);
-static void MX_USART2_UART_Init (void);
-static void MX_ADC1_Init (void);
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
+static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -66,7 +66,7 @@ float temperature = 0;
  * @brief  The application entry point.
  * @retval int
  */
-int main (void)
+int main(void)
 {
   /* USER CODE BEGIN 1 */
 
@@ -75,48 +75,46 @@ int main (void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init ();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
-  SSLL_Init ();
+  SSLL_Init();
 
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  SystemClock_Config ();
+  SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init ();
-  MX_USART2_UART_Init ();
-  MX_ADC1_Init ();
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  SSLL_testDisplays();
+  SSLL_testBrightness();
 
-  for (int i = 0; i < 100; i++)
-    {
-      displayDigit (i);
-      HAL_Delay (50);
-    }
-  clearAllDisplays ();
+  SSLL_clearAllDisplays();
 
-  changeBrightness (2);
+  SSLL_changeBrightness(1);
 
   while (1)
     {
       /* USER CODE END WHILE */
 
       /* USER CODE BEGIN 3 */
-      HAL_ADC_Start (&hadc1);
 
-      temperature = getTemperatureADCValue (&hadc1, 100);
-      displayDigit (temperature);
+      HAL_ADC_Start(&hadc1);
+
+      temperature = getTemperatureADCValue(&hadc1, 100);
+      SSLL_displayDigit(temperature);
     }
   /* USER CODE END 3 */
 }
@@ -125,7 +123,7 @@ int main (void)
  * @brief System Clock Configuration
  * @retval None
  */
-void SystemClock_Config (void)
+void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct =
     { 0 };
@@ -149,9 +147,9 @@ void SystemClock_Config (void)
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
-  if (HAL_RCC_OscConfig (&RCC_OscInitStruct) != HAL_OK)
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
-      Error_Handler ();
+      Error_Handler();
     }
   /** Initializes the CPU, AHB and APB buses clocks
    */
@@ -162,9 +160,9 @@ void SystemClock_Config (void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig (&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
     {
-      Error_Handler ();
+      Error_Handler();
     }
 }
 
@@ -173,7 +171,7 @@ void SystemClock_Config (void)
  * @param None
  * @retval None
  */
-static void MX_ADC1_Init (void)
+static void MX_ADC1_Init(void)
 {
 
   /* USER CODE BEGIN ADC1_Init 0 */
@@ -200,18 +198,18 @@ static void MX_ADC1_Init (void)
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
-  if (HAL_ADC_Init (&hadc1) != HAL_OK)
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
     {
-      Error_Handler ();
+      Error_Handler();
     }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
    */
   sConfig.Channel = ADC_CHANNEL_10;
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel (&hadc1, &sConfig) != HAL_OK)
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
     {
-      Error_Handler ();
+      Error_Handler();
     }
   /* USER CODE BEGIN ADC1_Init 2 */
 
@@ -224,7 +222,7 @@ static void MX_ADC1_Init (void)
  * @param None
  * @retval None
  */
-static void MX_USART2_UART_Init (void)
+static void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
@@ -242,9 +240,9 @@ static void MX_USART2_UART_Init (void)
   huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init (&huart2) != HAL_OK)
+  if (HAL_UART_Init(&huart2) != HAL_OK)
     {
-      Error_Handler ();
+      Error_Handler();
     }
   /* USER CODE BEGIN USART2_Init 2 */
 
@@ -257,7 +255,7 @@ static void MX_USART2_UART_Init (void)
  * @param None
  * @retval None
  */
-static void MX_GPIO_Init (void)
+static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct =
     { 0 };
@@ -270,32 +268,31 @@ static void MX_GPIO_Init (void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin (LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin (
+  HAL_GPIO_WritePin(
       GPIOA, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_15,
       GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin (
+  HAL_GPIO_WritePin(
       GPIOC,
       GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10
 	  | GPIO_PIN_11 | GPIO_PIN_12,
       GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin (GPIOB, GPIO_PIN_12 | GPIO_PIN_6 | GPIO_PIN_9,
-		     GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12 | GPIO_PIN_6 | GPIO_PIN_9, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin (GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init (B1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD2_Pin PA6 PA7 PA11
    PA12 PA15 */
@@ -304,7 +301,7 @@ static void MX_GPIO_Init (void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init (GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PC5 PC6 PC8 PC9
    PC10 PC11 PC12 */
@@ -313,21 +310,21 @@ static void MX_GPIO_Init (void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init (GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB12 PB6 PB9 */
   GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_6 | GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init (GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PD2 */
   GPIO_InitStruct.Pin = GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init (GPIOD, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 }
 
@@ -339,11 +336,11 @@ static void MX_GPIO_Init (void)
  * @brief  This function is executed in case of error occurrence.
  * @retval None
  */
-void Error_Handler (void)
+void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq ();
+  __disable_irq();
   while (1)
     {
     }

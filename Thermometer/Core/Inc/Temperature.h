@@ -3,6 +3,6 @@
 
 #include "stm32f4xx_hal.h"
 
-float getTemperatureADCValue(ADC_HandleTypeDef * hadc, uint32_t timeout);
+float getTemperatureADCValue(ADC_HandleTypeDef *hadc, uint32_t timeout);
 
 #endif

@@ -16,11 +16,10 @@
 
 static bool filled = false;
 
-static float arr[ARRSIZE] =
-  { 0.0f };
+static float arr[ARRSIZE] = { 0.0f };
 static int iter = 0;
 
-float findAvg (const float *arr)
+float findAvg(const float *arr)
 {
   float result = 0;
 
@@ -32,7 +31,7 @@ float findAvg (const float *arr)
   return result / ARRSIZE;
 }
 
-float ADC_Value_To_Degree (int ADC_Value)
+float ADC_Value_To_Degree(int ADC_Value)
 {
   if (MAX_ADC_VALUE < ADC_Value)
     {
@@ -46,7 +45,7 @@ float ADC_Value_To_Degree (int ADC_Value)
   return ((MAX_T / MAX_ADC_VALUE) * ADC_Value) - 10;
 }
 
-float getTemperatureADCValue (ADC_HandleTypeDef *hadc, uint32_t timeout)
+float getTemperatureADCValue(ADC_HandleTypeDef *hadc, uint32_t timeout)
 {
   if (iter < ARRSIZE)
     {
@@ -58,14 +57,14 @@ float getTemperatureADCValue (ADC_HandleTypeDef *hadc, uint32_t timeout)
       filled = true;
     }
 
-  if (HAL_ADC_PollForConversion (hadc, timeout) == HAL_OK)
+  if (HAL_ADC_PollForConversion(hadc, timeout) == HAL_OK)
     {
-      arr[iter] = ADC_Value_To_Degree (HAL_ADC_GetValue (hadc));
+      arr[iter] = ADC_Value_To_Degree(HAL_ADC_GetValue(hadc));
     }
 
   if (filled)
     {
-      return findAvg (arr);
+      return findAvg(arr);
     }
   else
     {

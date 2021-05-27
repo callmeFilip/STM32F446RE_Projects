@@ -37,19 +37,19 @@ typedef struct
 display_t g_display[DISPLAYCOUNT];
 symbol_t g_symbol[SYMBOLCOUNT];
 
-void configureSymbols (void);
-void configureDisplays (void);
+void configureSymbols(void);
+void configureDisplays(void);
 
-void SSLL_Init (void)
+void SSLL_Init(void)
 {
-  configureSymbols ();
-  configureDisplays ();
+  configureSymbols();
+  configureDisplays();
 }
 
 /**
  * Configure all symbols
  */
-void configureNumberZero ()
+void configureNumberZero()
 {
   g_symbol[0].symbolMap[0] = true;
   g_symbol[0].symbolMap[1] = true;
@@ -60,7 +60,7 @@ void configureNumberZero ()
   g_symbol[0].symbolMap[6] = false;
 }
 
-void configureNumberOne ()
+void configureNumberOne()
 {
   g_symbol[1].symbolMap[0] = false;
   g_symbol[1].symbolMap[1] = true;
@@ -71,7 +71,7 @@ void configureNumberOne ()
   g_symbol[1].symbolMap[6] = false;
 }
 
-void configureNumberTwo ()
+void configureNumberTwo()
 {
   g_symbol[2].symbolMap[0] = true;
   g_symbol[2].symbolMap[1] = true;
@@ -82,7 +82,7 @@ void configureNumberTwo ()
   g_symbol[2].symbolMap[6] = true;
 }
 
-void configureNumberThree ()
+void configureNumberThree()
 {
   g_symbol[3].symbolMap[0] = true;
   g_symbol[3].symbolMap[1] = true;
@@ -93,7 +93,7 @@ void configureNumberThree ()
   g_symbol[3].symbolMap[6] = true;
 }
 
-void configureNumberFour ()
+void configureNumberFour()
 {
   g_symbol[4].symbolMap[0] = false;
   g_symbol[4].symbolMap[1] = true;
@@ -104,7 +104,7 @@ void configureNumberFour ()
   g_symbol[4].symbolMap[6] = true;
 }
 
-void configureNumberFive ()
+void configureNumberFive()
 {
   g_symbol[5].symbolMap[0] = true;
   g_symbol[5].symbolMap[1] = false;
@@ -115,7 +115,7 @@ void configureNumberFive ()
   g_symbol[5].symbolMap[6] = true;
 }
 
-void configureNumberSix ()
+void configureNumberSix()
 {
   g_symbol[6].symbolMap[0] = true;
   g_symbol[6].symbolMap[1] = false;
@@ -126,7 +126,7 @@ void configureNumberSix ()
   g_symbol[6].symbolMap[6] = true;
 }
 
-void configureNumberSeven ()
+void configureNumberSeven()
 {
   g_symbol[7].symbolMap[0] = true;
   g_symbol[7].symbolMap[1] = true;
@@ -137,7 +137,7 @@ void configureNumberSeven ()
   g_symbol[7].symbolMap[6] = false;
 }
 
-void configureNumberEight ()
+void configureNumberEight()
 {
   g_symbol[8].symbolMap[0] = true;
   g_symbol[8].symbolMap[1] = true;
@@ -148,7 +148,7 @@ void configureNumberEight ()
   g_symbol[8].symbolMap[6] = true;
 }
 
-void configureNumberNine ()
+void configureNumberNine()
 {
   g_symbol[9].symbolMap[0] = true;
   g_symbol[9].symbolMap[1] = true;
@@ -159,55 +159,55 @@ void configureNumberNine ()
   g_symbol[9].symbolMap[6] = true;
 }
 
-void configureSymbols ()
+void configureSymbols()
 {
-  configureNumberZero ();
-  configureNumberOne ();
-  configureNumberTwo ();
-  configureNumberThree ();
-  configureNumberFour ();
-  configureNumberFive ();
-  configureNumberSix ();
-  configureNumberSeven ();
-  configureNumberEight ();
-  configureNumberNine ();
+  configureNumberZero();
+  configureNumberOne();
+  configureNumberTwo();
+  configureNumberThree();
+  configureNumberFour();
+  configureNumberFive();
+  configureNumberSix();
+  configureNumberSeven();
+  configureNumberEight();
+  configureNumberNine();
 
 }
 
-void dotOn (int displayIndex)
+void dotOn(int displayIndex)
 {
-  HAL_GPIO_WritePin (g_display[displayIndex].segment[DOTINDEX].port,
-		     g_display[displayIndex].segment[DOTINDEX].pin,
-		     GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(g_display[displayIndex].segment[DOTINDEX].port,
+		    g_display[displayIndex].segment[DOTINDEX].pin,
+		    GPIO_PIN_RESET);
 }
 
-void dotOff (int displayIndex)
+void dotOff(int displayIndex)
 {
-  HAL_GPIO_WritePin (g_display[displayIndex].segment[DOTINDEX].port,
-		     g_display[displayIndex].segment[DOTINDEX].pin,
-		     GPIO_PIN_SET);
+  HAL_GPIO_WritePin(g_display[displayIndex].segment[DOTINDEX].port,
+		    g_display[displayIndex].segment[DOTINDEX].pin,
+		    GPIO_PIN_SET);
 }
 
-void clearAllDisplays ()
+void SSLL_clearAllDisplays()
 {
   for (int displayIndex = 0; displayIndex < DISPLAYCOUNT; displayIndex++)
     {
-      clearDisplay (displayIndex);
+      SSLL_clearDisplay(displayIndex);
     }
 }
 
-void clearDisplay (const int displayIndex)
+void SSLL_clearDisplay(const int displayIndex)
 {
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
-      HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-			 g_display[displayIndex].segment[i].pin, GPIO_PIN_SET);
+      HAL_GPIO_WritePin(g_display[displayIndex].segment[i].port,
+			g_display[displayIndex].segment[i].pin, GPIO_PIN_SET);
     }
 
-  dotOff (displayIndex);
+  dotOff(displayIndex);
 }
 
-void configureDisplays (void)
+void configureDisplays(void)
 {
   g_display[0].segment[0].port = GPIOB;
   g_display[0].segment[1].port = GPIOC;
@@ -247,7 +247,7 @@ void configureDisplays (void)
 
 }
 
-void changeBrightness (const int brightness)
+void SSLL_changeBrightness(const int brightness)
 {
 
   g_brightness = brightness;
@@ -264,52 +264,52 @@ void changeBrightness (const int brightness)
 
 }
 
-void displaySymbol (const int displayIndex, const int number)
+void displaySymbol(const int displayIndex, const int number)
 {
   // iterate trough the symbol's map and set the diodes
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[number].symbolMap[i])
 	{
-	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-			     g_display[displayIndex].segment[i].pin,
-			     GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(g_display[displayIndex].segment[i].port,
+			    g_display[displayIndex].segment[i].pin,
+			    GPIO_PIN_RESET);
 	}
       else
 	{
-	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-			     g_display[displayIndex].segment[i].pin,
-			     GPIO_PIN_SET);
+	  HAL_GPIO_WritePin(g_display[displayIndex].segment[i].port,
+			    g_display[displayIndex].segment[i].pin,
+			    GPIO_PIN_SET);
 	}
     }
 
 }
 
-void displayFloat (const int displayIndex, const float fnumber)
+void displayFloat(const int displayIndex, const float fnumber)
 {
-  int roundNumber = round (fnumber);
+  int roundNumber = round(fnumber);
 
-  dotOn (1); // display 1
+  dotOn(1); // display 1
 
   // iterate trough the symbol's map and set the diodes
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
       if (g_symbol[roundNumber].symbolMap[i])
 	{
-	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
-			     g_display[displayIndex].segment[i].pin,
-			     GPIO_PIN_RESET);
+	  HAL_GPIO_WritePin(g_display[displayIndex].segment[i].port,
+			    g_display[displayIndex].segment[i].pin,
+			    GPIO_PIN_RESET);
 	}
     }
 }
 
-void run (const float number)
+void run(const float number)
 {
   // select display method
   if (number <= 99 && 10 <= number)
     {
       // extract first digit
-      int firstDigit = round (number);
+      int firstDigit = round(number);
 
       while (firstDigit >= 10)
 	{
@@ -317,22 +317,22 @@ void run (const float number)
 	}
 
       // extract last digit
-      int lastDigit = round (number);
+      int lastDigit = round(number);
       lastDigit %= 10;
 
       // display the digits
-      displaySymbol (1, firstDigit);
-      displaySymbol (0, lastDigit);
+      displaySymbol(1, firstDigit);
+      displaySymbol(0, lastDigit);
     }
   else if (number < 10 && 0 <= number)
     {
-      clearAllDisplays ();
+      SSLL_clearAllDisplays();
 
       // extract first digit
       int firstDigit = (int) number; // cuts the number after precision point
 
       // extract precision point
-      int lastDigit = (int) (floor (number * 10)) % 10;
+      int lastDigit = (int) (floor(number * 10)) % 10;
 
       while (firstDigit >= 10)
 	{
@@ -340,28 +340,63 @@ void run (const float number)
 	}
 
       // display the digits
-      displayFloat (1, firstDigit);
-      displayFloat (0, lastDigit);
+      displayFloat(1, firstDigit);
+      displayFloat(0, lastDigit);
     }
 }
 
-void displayDigit (const float number)
+void SSLL_displayDigit(const float number)
 {
-  uint32_t tickstart = HAL_GetTick ();
+  uint32_t tickstart = HAL_GetTick();
 
-  while ((HAL_GetTick () - tickstart) < g_brightness)
+  while ((HAL_GetTick() - tickstart) < g_brightness)
     {
-      run (number);
-      HAL_Delay (0); // wait 1 ms
+      run(number);
+      HAL_Delay(0); // wait 1 ms
     }
 
-  tickstart = HAL_GetTick ();
+  tickstart = HAL_GetTick();
 
-  while ((HAL_GetTick () - tickstart) < g_darkness)
+  while ((HAL_GetTick() - tickstart) < g_darkness)
     {
-      clearAllDisplays ();
-      HAL_Delay (0); // wait 1 ms
+      SSLL_clearAllDisplays();
+      HAL_Delay(0); // wait 1 ms
     }
 
 }
 
+// Tests
+void SSLL_testBrightness(void)
+{
+  for (int bright = 0; bright < 20; bright++)
+    {
+      SSLL_changeBrightness(bright);
+      for (int i = 0; i < 4; i++)
+	{
+	  SSLL_displayDigit(88);
+	}
+    }
+
+  for (int bright = 20; 0 <= bright; bright--)
+    {
+      SSLL_changeBrightness(bright);
+      for (int i = 0; i < 4; i++)
+	{
+	  SSLL_displayDigit(88);
+	}
+    }
+}
+
+void SSLL_testDisplays(void)
+{
+
+  for (int i = 0; i < 100; i += 11)
+    {
+      dotOn(0);
+      dotOn(1);
+      SSLL_displayDigit(i);
+      HAL_Delay(100);
+    }
+
+  SSLL_clearAllDisplays();
+}
