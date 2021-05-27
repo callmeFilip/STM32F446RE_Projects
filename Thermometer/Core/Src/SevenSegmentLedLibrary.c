@@ -11,6 +11,12 @@
 
 #define SYMBOLCOUNT 10 // symbols available
 #define DOTINDEX 7
+#define DELAYTIME 10
+#define MAX_BRIGHTNESS DELAYTIME
+#define MIN_BRIGHTNESS 0
+
+static int g_brightness = MAX_BRIGHTNESS;
+static int g_darkness = MIN_BRIGHTNESS;
 
 typedef struct
 {
@@ -241,6 +247,22 @@ void configureDisplays (void)
 
 }
 
+void changeBrightness (const float brightness)
+{
+  g_brightness = brightness;
+
+  if (brightness < MIN_BRIGHTNESS)
+    {
+      g_brightness = MIN_BRIGHTNESS;
+    }
+  else if (MAX_BRIGHTNESS < brightness)
+    {
+      g_brightness = MAX_BRIGHTNESS;
+    }
+
+  g_darkness = DELAYTIME - g_brightness;
+}
+
 void displaySymbol (const int displayIndex, const int number)
 {
   clearDisplay (displayIndex);
@@ -277,9 +299,8 @@ void displayFloat (const int displayIndex, const float fnumber)
     }
 }
 
-void displayDigit (const float number)
+void run (const float number)
 {
-
   // select display method
   if (number <= 99 && 10 <= number)
     {
@@ -319,6 +340,20 @@ void displayDigit (const float number)
       // display the digits
       displayFloat (1, firstDigit);
       displayFloat (0, lastDigit);
+    }
+}
+
+void displayDigit (const float number)
+{
+  uint32_t tickstart = HAL_GetTick ();
+
+  while ((HAL_GetTick () - tickstart) < DELAYTIME)
+    {
+      run (number);
+      HAL_Delay (g_brightness);
+
+      clearAllDisplays ();
+      HAL_Delay (g_darkness);
     }
 }
 

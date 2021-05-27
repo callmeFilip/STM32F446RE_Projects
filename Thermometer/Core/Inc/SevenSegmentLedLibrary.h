@@ -23,6 +23,8 @@ void SSLL_Init (void);
  */
 void displayDigit (const float number);
 
+void changeBrightness (const float percentage);
+
 /**
  * void clearDisplay (const float number);
  * Clears the given display.

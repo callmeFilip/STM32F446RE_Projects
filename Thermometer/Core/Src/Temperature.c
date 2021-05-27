@@ -12,9 +12,8 @@
 #define MIN_ADC_VALUE 0
 
 #define MAX_T 125.0
-#define ARRSIZE 1000
-static float arr[ARRSIZE] = { 0.0f };
-static int iter = 0;
+
+#define BUFFSIZE 1000
 
 float ADC_Value_To_Degree (int ADC_Value)
 {
@@ -30,32 +29,14 @@ float ADC_Value_To_Degree (int ADC_Value)
   return ((MAX_T / MAX_ADC_VALUE) * ADC_Value) - 10;
 }
 
-float findAvg(const float *arr)
-{
-  float result = 0;
-
-  for (int i = 0; i < ARRSIZE; i++)
-  {
-    result+=arr[i];
-  }
-
-  return result / ARRSIZE;
-}
-
 float getTemperatureADCValue (ADC_HandleTypeDef *hadc, uint32_t timeout)
 {
-  arr[iter] = ADC_Value_To_Degree (HAL_ADC_GetValue (hadc));
+  float temperature = 0;
 
-  HAL_ADC_PollForConversion (hadc, timeout);
-
-  if (iter < ARRSIZE)
+  for (int i = 0; i < BUFFSIZE; i++)
     {
-      iter++;
-    }
-  else
-    {
-      iter = 0;
+      temperature += ADC_Value_To_Degree (HAL_ADC_GetValue (hadc));
     }
 
-  return findAvg(arr);
+  return temperature / BUFFSIZE;
 }
