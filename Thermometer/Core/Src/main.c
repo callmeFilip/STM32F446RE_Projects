@@ -98,7 +98,7 @@ int main (void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  changeBrightness (10);
+  changeBrightness (1);
   while (1)
     {
       /* USER CODE END WHILE */

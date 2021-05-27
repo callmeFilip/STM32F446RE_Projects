@@ -247,7 +247,7 @@ void configureDisplays (void)
 
 }
 
-void changeBrightness (const float brightness)
+void changeBrightness (const int brightness)
 {
   g_brightness = brightness;
 

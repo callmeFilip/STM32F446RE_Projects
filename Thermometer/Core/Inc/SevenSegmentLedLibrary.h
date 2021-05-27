@@ -23,7 +23,13 @@ void SSLL_Init (void);
  */
 void displayDigit (const float number);
 
-void changeBrightness (const float percentage);
+/**
+ * void changeBrightness (const int brightnessLevel);
+ * Changes the brightness of the displays.
+ * Has at least 10ms delay.
+ * Select brightness level via parameter.
+ */
+void changeBrightness (const int brightnessLevel);
 
 /**
  * void clearDisplay (const float number);
