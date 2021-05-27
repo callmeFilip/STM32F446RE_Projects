@@ -7,13 +7,30 @@
 
 #include "Temperature.h"
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_ADC_VALUE 4095
 #define MIN_ADC_VALUE 0
-
 #define MAX_T 125.0
+#define ARRSIZE 100
 
-#define BUFFSIZE 1000
+static bool filled = false;
+
+static float arr[ARRSIZE] =
+  { 0.0f };
+static int iter = 0;
+
+float findAvg (const float *arr)
+{
+  float result = 0;
+
+  for (int i = 0; i < ARRSIZE; i++)
+    {
+      result += arr[i];
+    }
+
+  return result / ARRSIZE;
+}
 
 float ADC_Value_To_Degree (int ADC_Value)
 {
@@ -31,12 +48,27 @@ float ADC_Value_To_Degree (int ADC_Value)
 
 float getTemperatureADCValue (ADC_HandleTypeDef *hadc, uint32_t timeout)
 {
-  float temperature = 0;
-
-  for (int i = 0; i < BUFFSIZE; i++)
+  if (iter < ARRSIZE)
     {
-      temperature += ADC_Value_To_Degree (HAL_ADC_GetValue (hadc));
+      iter++;
+    }
+  else
+    {
+      iter = 0;
+      filled = true;
     }
 
-  return temperature / BUFFSIZE;
+  if (HAL_ADC_PollForConversion (hadc, timeout) == HAL_OK)
+    {
+      arr[iter] = ADC_Value_To_Degree (HAL_ADC_GetValue (hadc));
+    }
+
+  if (filled)
+    {
+      return findAvg (arr);
+    }
+  else
+    {
+      return 0;
+    }
 }

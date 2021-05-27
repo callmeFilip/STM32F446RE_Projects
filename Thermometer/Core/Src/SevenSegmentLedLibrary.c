@@ -11,7 +11,7 @@
 
 #define SYMBOLCOUNT 10 // symbols available
 #define DOTINDEX 7
-#define DELAYTIME 10
+#define DELAYTIME 20
 #define MAX_BRIGHTNESS DELAYTIME
 #define MIN_BRIGHTNESS 0
 
@@ -249,24 +249,23 @@ void configureDisplays (void)
 
 void changeBrightness (const int brightness)
 {
-  g_brightness = brightness;
 
+  g_brightness = brightness;
   if (brightness < MIN_BRIGHTNESS)
     {
-      g_brightness = MIN_BRIGHTNESS;
+      g_brightness = MIN_BRIGHTNESS; // -1
     }
   else if (MAX_BRIGHTNESS < brightness)
     {
-      g_brightness = MAX_BRIGHTNESS;
+      g_brightness = MAX_BRIGHTNESS; // -1
     }
 
   g_darkness = DELAYTIME - g_brightness;
+
 }
 
 void displaySymbol (const int displayIndex, const int number)
 {
-  clearDisplay (displayIndex);
-
   // iterate trough the symbol's map and set the diodes
   for (int i = 0; i < NUMBERSEGMENTS; i++)
     {
@@ -276,6 +275,12 @@ void displaySymbol (const int displayIndex, const int number)
 			     g_display[displayIndex].segment[i].pin,
 			     GPIO_PIN_RESET);
 	}
+      else
+	{
+	  HAL_GPIO_WritePin (g_display[displayIndex].segment[i].port,
+			     g_display[displayIndex].segment[i].pin,
+			     GPIO_PIN_SET);
+	}
     }
 
 }
@@ -283,7 +288,6 @@ void displaySymbol (const int displayIndex, const int number)
 void displayFloat (const int displayIndex, const float fnumber)
 {
   int roundNumber = round (fnumber);
-  clearDisplay (displayIndex);
 
   dotOn (1); // display 1
 
@@ -304,19 +308,17 @@ void run (const float number)
   // select display method
   if (number <= 99 && 10 <= number)
     {
-      clearAllDisplays ();
-
       // extract first digit
       int firstDigit = round (number);
-
-      // extract last digit
-      int lastDigit = round (number);
-      lastDigit %= 10;
 
       while (firstDigit >= 10)
 	{
 	  firstDigit = firstDigit / 10;
 	}
+
+      // extract last digit
+      int lastDigit = round (number);
+      lastDigit %= 10;
 
       // display the digits
       displaySymbol (1, firstDigit);
@@ -347,13 +349,19 @@ void displayDigit (const float number)
 {
   uint32_t tickstart = HAL_GetTick ();
 
-  while ((HAL_GetTick () - tickstart) < DELAYTIME)
+  while ((HAL_GetTick () - tickstart) < g_brightness)
     {
       run (number);
-      HAL_Delay (g_brightness);
-
-      clearAllDisplays ();
-      HAL_Delay (g_darkness);
+      HAL_Delay (0); // wait 1 ms
     }
+
+  tickstart = HAL_GetTick ();
+
+  while ((HAL_GetTick () - tickstart) < g_darkness)
+    {
+      clearAllDisplays ();
+      HAL_Delay (0); // wait 1 ms
+    }
+
 }
 

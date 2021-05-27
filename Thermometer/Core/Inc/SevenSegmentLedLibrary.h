@@ -38,4 +38,6 @@ void changeBrightness (const int brightnessLevel);
  */
 void clearDisplay (const int displayIndex);
 
+void clearAllDisplays();
+
 #endif /* INC_SEVENSEGMENTLEDLIBRARY_H_ */

@@ -95,17 +95,27 @@ int main (void)
   MX_ADC1_Init ();
   /* USER CODE BEGIN 2 */
   /* USER CODE END 2 */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  changeBrightness (1);
+  for (int i = 0; i < 100; i++)
+    {
+      displayDigit (i);
+      HAL_Delay (50);
+    }
+  clearAllDisplays ();
+
+  changeBrightness (2);
+
   while (1)
     {
       /* USER CODE END WHILE */
+
       /* USER CODE BEGIN 3 */
       HAL_ADC_Start (&hadc1);
 
-      temperature = getTemperatureADCValue (&hadc1, 1);
+      temperature = getTemperatureADCValue (&hadc1, 100);
       displayDigit (temperature);
     }
   /* USER CODE END 3 */
@@ -189,7 +199,7 @@ static void MX_ADC1_Init (void)
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   if (HAL_ADC_Init (&hadc1) != HAL_OK)
     {
       Error_Handler ();
