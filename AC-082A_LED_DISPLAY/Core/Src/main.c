@@ -72,41 +72,56 @@ int main (void)
     /* MCU Configuration--------------------------------------------------------*/
 
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-    HAL_Init ();
+    HAL_Init();
 
     /* USER CODE BEGIN Init */
 
     /* USER CODE END Init */
 
     /* Configure the system clock */
-    SystemClock_Config ();
+    SystemClock_Config();
 
     /* USER CODE BEGIN SysInit */
 
     /* USER CODE END SysInit */
 
     /* Initialize all configured peripherals */
-    MX_GPIO_Init ();
-    MX_USART2_UART_Init ();
+    MX_GPIO_Init();
+    MX_USART2_UART_Init();
     /* USER CODE BEGIN 2 */
-    AC082A_Init (GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_RESET,
-                 GPIO_PIN_SET, GPIO_PIN_RESET);
+    AC082A_Init(GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_SET, GPIO_PIN_SET,
+                GPIO_PIN_SET, GPIO_PIN_RESET);
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
-    char *txt = "Pepko e gotin";
+
+    // char *txt = "Sasho & Tisho are the best! I teteto e programist na pyton";
+    int slash[] = { 0, 0, 8, 4, 2, 0, 0, 0 };
+    int sun[] = { 0, 8, 0, 0, 0, 0, 0, 0 };
+    int bemol[] = { 8, 8, 8, 8, 12, 10, 12, 0 };
+    int a[] = { 0, 4, 10, 17, 31, 17, 17, 0 };
+    int b[] = { 0, 30, 16, 28, 18, 18, 28, 0 };
+    int v[] = { 0, 12, 10, 12, 10, 10, 12, 0 };
+
+    AC082A_Create_Custom_Character(slash);
+    AC082A_Create_Custom_Character(sun);
+    AC082A_Create_Custom_Character(bemol);
+    AC082A_Create_Custom_Character(a);
+    AC082A_Create_Custom_Character(b);
+    AC082A_Create_Custom_Character(v);
 
     while (1)
     {
         /* USER CODE END WHILE */
-        AC082A_Write_Text (txt);
+        AC082A_Write_Char(0);
+        AC082A_Write_Char(1);
+        AC082A_Write_Char(2);
+        AC082A_Write_Char(3);
+        AC082A_Write_Char(4);
+        AC082A_Write_Char(5);
+        HAL_Delay(10000);
 
-        HAL_Delay (5000);
-
-        AC082A_Clear ();
-
-        HAL_Delay (1000);
         /* USER CODE BEGIN 3 */
     }
     /* USER CODE END 3 */
@@ -138,9 +153,9 @@ void SystemClock_Config (void)
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
     RCC_OscInitStruct.PLL.PLLQ = 2;
     RCC_OscInitStruct.PLL.PLLR = 2;
-    if (HAL_RCC_OscConfig (&RCC_OscInitStruct) != HAL_OK)
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
-        Error_Handler ();
+        Error_Handler();
     }
     /** Initializes the CPU, AHB and APB buses clocks
      */
@@ -151,9 +166,9 @@ void SystemClock_Config (void)
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-    if (HAL_RCC_ClockConfig (&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
     {
-        Error_Handler ();
+        Error_Handler();
     }
 }
 
@@ -180,9 +195,9 @@ static void MX_USART2_UART_Init (void)
     huart2.Init.Mode = UART_MODE_TX_RX;
     huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-    if (HAL_UART_Init (&huart2) != HAL_OK)
+    if (HAL_UART_Init(&huart2) != HAL_OK)
     {
-        Error_Handler ();
+        Error_Handler();
     }
     /* USER CODE BEGIN USART2_Init 2 */
 
@@ -206,25 +221,25 @@ static void MX_GPIO_Init (void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin (
+    HAL_GPIO_WritePin(
             GPIOA,
             LD2_Pin | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_11 | GPIO_PIN_12,
             GPIO_PIN_RESET);
 
     /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin (
+    HAL_GPIO_WritePin(
             GPIOC,
             GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9,
             GPIO_PIN_RESET);
 
     /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin (GPIOB, GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
 
     /*Configure GPIO pin : B1_Pin */
     GPIO_InitStruct.Pin = B1_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init (B1_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
     /*Configure GPIO pins : LD2_Pin PA6 PA7 PA11
      PA12 */
@@ -233,7 +248,7 @@ static void MX_GPIO_Init (void)
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init (GPIOA, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
     /*Configure GPIO pins : PC5 PC6 PC7 PC8
      PC9 */
@@ -242,14 +257,14 @@ static void MX_GPIO_Init (void)
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init (GPIOC, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /*Configure GPIO pins : PB8 PB9 */
     GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init (GPIOB, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
@@ -265,7 +280,7 @@ void Error_Handler (void)
 {
     /* USER CODE BEGIN Error_Handler_Debug */
     /* User can add his own implementation to report the HAL error return state */
-    __disable_irq ();
+    __disable_irq();
     while (1)
     {
     }
