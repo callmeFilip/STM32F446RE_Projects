@@ -54,7 +54,7 @@ void AC082A_Return_Home (void);
 
 void AC082A_Write_Text (char *text);
 
-void AC082A_Write_Char (char ch);
+void AC082A_Write_Char (unsigned char ch);
 
 void AC082A_Create_Custom_Character (int *character);
 

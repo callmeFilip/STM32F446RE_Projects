@@ -98,30 +98,28 @@ int main (void)
 
     // char *txt = "Sasho & Tisho are the best! I teteto e programist na pyton";
     int slash[] = { 0, 0, 8, 4, 2, 0, 0, 0 };
-    int sun[] = { 0, 8, 0, 0, 0, 0, 0, 0 };
-    int bemol[] = { 8, 8, 8, 8, 12, 10, 12, 0 };
-    int a[] = { 0, 4, 10, 17, 31, 17, 17, 0 };
-    int b[] = { 0, 30, 16, 28, 18, 18, 28, 0 };
-    int v[] = { 0, 12, 10, 12, 10, 10, 12, 0 };
+    int sun[] = { 31, 31, 31, 31, 31, 31, 31, 31 };
+//    int sun[] = { 31, 8, 0, 0, 0, 0, 0, 31 };
+//    int bemol[] = { 8, 8, 8, 8, 12, 10, 12, 0 };
+//    int a[] = { 0, 4, 10, 17, 31, 17, 17, 0 };
+//    int b[] = { 0, 30, 16, 28, 18, 18, 28, 0 };
+//    int v[] = { 0, 12, 10, 12, 10, 10, 12, 0 };
 
     AC082A_Create_Custom_Character(slash);
     AC082A_Create_Custom_Character(sun);
-    AC082A_Create_Custom_Character(bemol);
-    AC082A_Create_Custom_Character(a);
-    AC082A_Create_Custom_Character(b);
-    AC082A_Create_Custom_Character(v);
+//    AC082A_Create_Custom_Character(bemol);
+//    AC082A_Create_Custom_Character(a);
+//    AC082A_Create_Custom_Character(b);
+//    AC082A_Create_Custom_Character(v);
 
     while (1)
     {
         /* USER CODE END WHILE */
-        AC082A_Write_Char(0);
-        AC082A_Write_Char(1);
-        AC082A_Write_Char(2);
-        AC082A_Write_Char(3);
-        AC082A_Write_Char(4);
-        AC082A_Write_Char(5);
-        HAL_Delay(10000);
-
+//        AC082A_Write_Char(0);
+//        AC082A_Write_Char(1);
+    	AC082A_Write_Char ('a');
+        // AC082A_Clear();
+        HAL_Delay(0);
         /* USER CODE BEGIN 3 */
     }
     /* USER CODE END 3 */

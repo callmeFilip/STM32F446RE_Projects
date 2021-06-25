@@ -33,6 +33,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "AC-082A_LIB.h"
+#include "change_GPIO.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
